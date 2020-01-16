@@ -101,13 +101,15 @@ tricky <- c(1, 2, 3, "4") # character
 
 
 
-# resume here (from https://datacarpentry.org/R-ecology-lesson/01-intro-to-r.html):
-# We’ve seen that atomic vectors can be of type character, numeric (or double), integer, and logical. But what happens if we try to mix these types in a single vector?
 
 
 ### Challenge (optional)
 ##
 ## * Can you figure out why `"four" > "five"` returns `TRUE`?
+
+# from site:
+
+# When using “>” or “<” on strings, R compares their alphabetical order. Here “four” comes after “five”, and therefore is “greater than” it. 
 
 
 
@@ -115,11 +117,13 @@ tricky <- c(1, 2, 3, "4") # character
 
 heights <- c(63, 69, 60, 65, NA, 68, 61, 70, 61, 59, 64, 69, 63, 63, NA, 72, 65, 64, 70, 63, 65)
 
-# 1.
+## Extract those elements which are not missing values.
 heights_no_na <- heights[!is.na(heights)] 
 # or
+## Returns the object with incomplete cases removed. The returned object is an atomic vector of type `"numeric"` (aka `"double"`)
 heights_no_na <- na.omit(heights)
 # or
+## Extract those elements which are complete cases. The returned object is an atomic vector of type `"numeric"` (aka `"double"`)
 heights_no_na <- heights[complete.cases(heights)]
 
 # 2.
@@ -132,7 +136,13 @@ length(heights_above_67)
 ## ### Challenge
 ## 1. Using this vector of heights in inches, create a new vector with the NAs removed.
 ##
-##    heights <- c(63, 69, 60, 65, NA, 68, 61, 70, 61, 59, 64, 69, 63, 63, NA, 72, 65, 64, 70, 63, 65)
+   heights <- c(63, 69, 60, 65, NA, 68, 61, 70, 61, 59, 64, 69, 63, 63, NA, 72, 65, 64, 70, 63, 65)
+heights_no_na <- heights[complete.cases(heights)]
+heights
+isNa <- heights[is.na(heights)]
+isNa
+length(heights)
+length(heights) - length(isNa) - length(heights_no_na)
 ##
 ## 2. Use the function `median()` to calculate the median of the `heights` vector.
 ##
