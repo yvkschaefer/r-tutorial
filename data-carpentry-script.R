@@ -143,20 +143,46 @@ isNa <- heights[is.na(heights)]
 isNa
 length(heights)
 length(heights) - length(isNa) - length(heights_no_na)
+heights_no_na
+length(heights_no_na)
 ##
 ## 2. Use the function `median()` to calculate the median of the `heights` vector.
-##
+
+median(heights_no_na) # 64
+median(heights, na.rm = TRUE) # 64
+
 ## 3. Use R to figure out how many people in the set are taller than 67 inches.
+
+heights_above_67 <- length(heights_no_na[heights_no_na > 67])
+heights_above_67 # 6
+
+
 ### Presentation of the survey data
 
-## download.file(url="https://ndownloader.figshare.com/files/2292169",
-##               destfile = "data_raw/portal_data_joined.csv")
+download.file(url="https://ndownloader.figshare.com/files/2292169",
+              destfile = "data_raw/portal_data_joined.csv")
 
+surveys <- read.csv("data_raw/portal_data_joined.csv")
+head(surveys)
+View(surveys)
+str(surveys)
 
+# size
+dim(surveys) # returns a vector with the number of rows in the first element, and the number of columns as the second element (the _dim_ensions of the object)
+nrow(surveys) # returns the number of rows
+ncol(surveys) # returns the number of columns
 
+# content
+head(surveys) # shows the first 6 rows
+tail(surveys) # shows the last 6 rows
 
+# names
+names(surveys) # returns the column names (synonym of colnames() for data.frame objects)
+rownames(surveys) # returns the row names
 
-
+# summary
+str(surveys) # structure of the object and information about the class, length and content of each column
+summary(surveys) # summary statistics for each column
 
 
 
@@ -166,12 +192,18 @@ length(heights) - length(isNa) - length(heights_no_na)
 ## Challenge
 ## Based on the output of `str(surveys)`, can you answer the following questions?
 ## * What is the class of the object `surveys`?
+# data frame
+
 ## * How many rows and how many columns are in this object?
+# rows: 34786; columns: 13
+
 ## * How many species have been recorded during these surveys?
+# 48
 
 
 
 ## Indexing and subsetting data frames
+#resume here :) https://datacarpentry.org/R-ecology-lesson/02-starting-with-data.html
 
 
 
