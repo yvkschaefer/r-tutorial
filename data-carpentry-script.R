@@ -203,7 +203,6 @@ summary(surveys) # summary statistics for each column
 
 
 ## Indexing and subsetting data frames
-#resume here :) https://datacarpentry.org/R-ecology-lesson/02-starting-with-data.html
 
 
 
@@ -217,7 +216,9 @@ summary(surveys) # summary statistics for each column
 ###
 ### 1. Create a `data.frame` (`surveys_200`) containing only the
 ###    data in row 200 of the `surveys` dataset.
-###
+surveys_200 <- surveys[200,]
+
+
 ### 2. Notice how `nrow()` gave you the number of rows in a `data.frame`?
 ###
 ###      * Use that number to pull out just that last row in the data frame
@@ -225,15 +226,24 @@ summary(surveys) # summary statistics for each column
 ###        sure it's meeting expectations.
 ###      * Pull out that last row using `nrow()` instead of the row number
 ###      * Create a new data frame object (`surveys_last`) from that last row
-###
+# Saving `n_rows` to improve readability and reduce duplication
+n_rows <- nrow(surveys)
+surveys_last <- surveys[n_rows,]
+surveys_last
+tail(surveys)
+
 ### 3. Use `nrow()` to extract the row that is in the middle of the
 ###    data frame. Store the content of this row in an object named
 ###    `surveys_middle`.
-###
+surveys_middle <- surveys[n_rows/2,]
+surveys_middle
+
+
 ### 4. Combine `nrow()` with the `-` notation above to reproduce the behavior of
 ###    `head(surveys)`, keeping just the first through 6th rows of the surveys
 ###    dataset.
-
+surveys_head <- surveys[-c(7:n_rows), ]
+surveys_head
 
 ### Factors
 
@@ -260,44 +270,76 @@ plot(surveys$sex)
 ## Challenges
 ##
 ## * Rename "F" and "M" to "female" and "male" respectively.
+levels(sex)[2:3] <- c("female", "male")
+
+
 ## * Now that we have renamed the factor level to "undetermined", can you recreate the
 ##   barplot such that "undetermined" is last (after "male")
+sex <- factor(sex, levels = c("female", "male", "undetermined"))
+plot(sex)
 
 ## ## Compare the difference between our data read as `factor` vs `character`.
-## surveys <- read.csv("data_raw/portal_data_joined.csv", stringsAsFactors = TRUE)
-## str(surveys)
-## surveys <- read.csv("data_raw/portal_data_joined.csv", stringsAsFactors = FALSE)
-## str(surveys)
+surveys <- read.csv("data_raw/portal_data_joined.csv", stringsAsFactors = TRUE)
+str(surveys)
+surveys <- read.csv("data_raw/portal_data_joined.csv", stringsAsFactors = FALSE)
+str(surveys)
 ## ## Convert the column "plot_type" into a factor
-## surveys$plot_type <- factor(surveys$plot_type)
+surveys$plot_type <- factor(surveys$plot_type)
 
 
 
 ## ## Challenge:
 ## ##  There are a few mistakes in this hand-crafted `data.frame`,
 ## ##  can you spot and fix them? Don't hesitate to experiment!
-## animal_data <- data.frame(
-##       animal = c(dog, cat, sea cucumber, sea urchin),
-##       feel = c("furry", "squishy", "spiny"),
-##       weight = c(45, 8 1.1, 0.8)
-##       )
-
+animal_data <- data.frame(
+      animal = c("dog", "cat", "sea cucumber", "sea urchin"),
+      feel = c("furry", "furry", "squishy", "spiny"),
+      weight = c(45, 8, 1.1, 0.8)
+      )
+animal_data
 
 
 ## ## Challenge:
 ## ##   Can you predict the class for each of the columns in the following
-## ##   example?
+## ##   example? character, character, character, character, numeric
 ## ##   Check your guesses using `str(country_climate)`:
 ## ##   * Are they what you expected? Why? why not?
 ## ##   * What would have been different if we had added `stringsAsFactors = FALSE`
 ## ##     when we created this data frame?
 ## ##   * What would you need to change to ensure that each column had the
 ## ##     accurate data type?
-## country_climate <- data.frame(country = c("Canada", "Panama", "South Africa", "Australia"),
-##                                climate = c("cold", "hot", "temperate", "hot/temperate"),
-##                                temperature = c(10, 30, 18, "15"),
-##                                northern_hemisphere = c(TRUE, TRUE, FALSE, "FALSE"),
-##                                has_kangaroo = c(FALSE, FALSE, FALSE, 1))
+country_climate <- data.frame(country = c("Canada", "Panama", "South Africa", "Australia"),
+                               climate = c("cold", "hot", "temperate", "hot/temperate"),
+                               temperature = c(10, 30, 18, 15),
+                               northern_hemisphere = c(TRUE, TRUE, FALSE, FALSE),
+                               has_kangaroo = c(FALSE, FALSE, FALSE, TRUE))
+
+library(lubridate)
+
+
+my_date <- ymd("2015-01-01")
+str(my_date)
+# sep indicates the character to use to separate each component
+my_date <- ymd(paste("2015", "1", "1", sep = "-"))
+str(my_date)
+
+paste(surveys$year, surveys$month, surveys$day, sep = "-")
+ymd(paste(surveys$year, surveys$month, surveys$day, sep = "-"))
+surveys$date <- ymd(paste(surveys$year, surveys$month, surveys$day, sep = "-"))
+summary(surveys$date)
+
+# let's see what's happening with our 129 NAs, our missing date rows
+missing_dates <- surveys[is.na(surveys$date), c("year", "month", "day")]
+head(missing_dates)
+# seems like every date row that didn't parse was in the year 2000. let's confirm if this is true by checking to see if any date rows that _did_ parse were in the year 2000
+
+sum(surveys$year == 2000)
+sum(surveys$year == 2000, na.rm = TRUE)
+# both of the above commands return 1509, which is != 129.
+
+#It seems like the non-parsed dates are either September 31st 2000 or April 31st 2000, neither of those days are real dates if you look at a calendar from the year 2000, or this year... I would omit those data points as seems to be happening anyway, because the dates are clearly wrong.
+
+
 ## ## Pipes Challenge:
 ## ##  Using pipes, subset the data to include animals collected
 ## ##  before 1995, and retain the columns `year`, `sex`, and `weight.`
