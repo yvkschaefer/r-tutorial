@@ -461,23 +461,66 @@ surveys %>%
 
 
 
+surveys_gw <- surveys %>% 
+  filter(!is.na(weight)) %>% 
+  group_by(genus, plot_id) %>% 
+  summarize(mean_weight = mean(weight))
 
+str(surveys_gw)
 
+surveys_spread <- surveys_gw %>% 
+  spread(key = genus, value = mean_weight)
 
+str(surveys_spread)
 
+View(surveys_gw)
+View(surveys_spread)
 
+surveys_gw %>% 
+  spread(genus, mean_weight, fill = 0) %>% 
+  head()
+
+surveys_gather <- surveys_spread %>% 
+  gather(key = genus, value = mean_weight, -plot_id)
+
+str(surveys_gather)
+View(surveys_gather)
+
+surveys_spread %>% 
+  gather(key = genus, value = mean_weight, Baiomys:Spermophilus) %>% 
+  head()
 
 ## ## Reshaping challenges
 ## 
 ## ## 1. Make a wide data frame with `year` as columns, `plot_id`` as rows, and where the values are the number of genera per plot. You will need to summarize before reshaping, and use the function `n_distinct` to get the number of unique genera within a chunk of data. It's a powerful function! See `?n_distinct` for more.
-## 
-## ## 2. Now take that data frame, and make it long again, so each row is a unique `plot_id` `year` combination
-## 
-## ## 3. The `surveys` data set is not truly wide or long because there are two columns of measurement - `hindfoot_length` and `weight`.  This makes it difficult to do things like look at the relationship between mean values of each measurement per year in different plot types. Let's walk through a common solution for this type of problem. First, use `gather` to create a truly long dataset where we have a key column called `measurement` and a `value` column that takes on the value of either `hindfoot_length` or `weight`. Hint: You'll need to specify which columns are being gathered.
-## 
-## ## 4. With this new truly long data set, calculate the average of each `measurement` in each `year` for each different `plot_type`. Then `spread` them into a wide data set with a column for `hindfoot_length` and `weight`. Hint: Remember, you only need to specify the key and value columns for `spread`.
-## 
 
+rich_time <- surveys %>% 
+  group_by(plot_id, year) %>% 
+  summarize(n_genera = n_distinct(genus)) %>% 
+  spread(year, n_genera)
+
+View(rich_time)
+head(rich_time)
+
+
+## ## 2. Now take that data frame, and make it long again, so each row is a unique `plot_id` `year` combination
+
+rich_time %>% 
+  gather(year, n_genera, -plot_id)
+
+## ## 3. The `surveys` data set is not truly wide or long because there are two columns of measurement - `hindfoot_length` and `weight`.  This makes it difficult to do things like look at the relationship between mean values of each measurement per year in different plot types. Let's walk through a common solution for this type of problem. First, use `gather` to create a truly long dataset where we have a key column called `measurement` and a `value` column that takes on the value of either `hindfoot_length` or `weight`. Hint: You'll need to specify which columns are being gathered.
+
+surveys_long <- surveys %>% 
+  gather(measurement, value, hindfoot_length, weight)
+
+## ## 4. With this new truly long data set, calculate the average of each `measurement` in each `year` for each different `plot_type`. Then `spread` them into a wide data set with a column for `hindfoot_length` and `weight`. Hint: Remember, you only need to specify the key and value columns for `spread`.
+
+surveys
+
+surveys_long %>% 
+  group_by(year, measurement, plot_type) %>% 
+  summarize(mean_value = mean(value, na.rm = TRUE)) %>% 
+  spread(measurement, mean_value)
 
 
 
@@ -491,6 +534,11 @@ surveys %>%
 ##            !is.na(hindfoot_length),        # remove missing hindfoot_length
 ##            sex != "")                      # remove missing sex
 ## 
+surveys_complete <- surveys %>% 
+  filter(!is.na(weight),
+         !is.na(hindfoot_length),
+         !is.na(sex))
+
 ## ##  Now remove rare species in two steps. First, make a list of species which
 ## ##  appear at least 50 times in our dataset:
 ## species_counts <- surveys_complete %>%
@@ -498,9 +546,19 @@ surveys %>%
 ##     filter(n >= 50) %>%
 ##     select(species_id)
 ## 
+species_counts <- surveys_complete %>% 
+  count(species_id) %>% 
+  filter(n >= 50)
 ## ##  Second, keep only those species:
 ## surveys_complete <- surveys_complete %>%
 ##     filter(species_id %in% species_counts$species_id)
+surveys_complete <- surveys_complete %>% 
+  filter(species_id %in% species_counts$species_id)
+
+dim(surveys_complete)
+
+write_csv(surveys_complete, path="data/surveys_complete.csv")
+
 ### Data Visualization with ggplot2
 
 
