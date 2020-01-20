@@ -406,49 +406,58 @@ surveys %>%
 
 
 
+surveys %>% 
+  group_by(sex) %>% 
+  summarize(mean_weight = mean(weight, na.rm = TRUE))
 
+surveys %>% 
+  filter(!is.na(weight)) %>% 
+  group_by(sex, species_id) %>%
+  summarize(mean_weight = mean(weight),
+            min_weight = min(weight)) %>% 
+  arrange(desc(min_weight)) %>% 
+  print(n = 15)
 
+surveys %>% 
+  count(sex)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+surveys %>% 
+  count(sex, species) %>% 
+  arrange(species, desc(n))
 
 
 
 
 ## ## Count Challenges:
 ## ##  1. How many animals were caught in each `plot_type` surveyed?
-## 
+
+surveys %>% 
+  count(plot_type)
+
 ## ##  2. Use `group_by()` and `summarize()` to find the mean, min, and max
 ## ## hindfoot length for each species (using `species_id`). Also add the number of
 ## ## observations (hint: see `?n`).
-## 
+
+surveys %>% 
+  filter(!is.na(hindfoot_length)) %>% 
+  group_by(species_id) %>% 
+  summarize(
+    mean_hindfoot_length = mean(hindfoot_length),
+    min_hindfoot_length = min(hindfoot_length),
+    max_hindfoot_length = max(hindfoot_length),
+    n = n()
+    )
+
 ## ##  3. What was the heaviest animal measured in each year? Return the
 ## ##  columns `year`, `genus`, `species_id`, and `weight`.
 
-
-
-
-
-
-
-
-
-
+surveys %>% 
+  filter(!is.na(weight)) %>% 
+  group_by(year) %>% 
+  filter(weight == max(weight)) %>% 
+  select(year, genus, species_id, weight) %>% 
+  arrange(year) %>% 
+  print(n = 30)
 
 
 
