@@ -340,10 +340,32 @@ sum(surveys$year == 2000, na.rm = TRUE)
 #It seems like the non-parsed dates are either September 31st 2000 or April 31st 2000, neither of those days are real dates if you look at a calendar from the year 2000, or this year... I would omit those data points as seems to be happening anyway, because the dates are clearly wrong.
 
 
+## load the tidyverse packages, including dplyr
+library(tidyverse)
+surveys <- read_csv("data_raw/portal_data_joined.csv")
+## inspect the data
+str(surveys)
+## preview the data
+View(surveys)
+
+
+select(surveys, plot_id, species_id, weight)
+select(surveys, -record_id, -species_id)
+filter(surveys, year == 1995)
+
+
+surveys %>% 
+  filter(weight < 5) %>% 
+  select(species_id, sex, weight)
+
+
 ## ## Pipes Challenge:
 ## ##  Using pipes, subset the data to include animals collected
 ## ##  before 1995, and retain the columns `year`, `sex`, and `weight.`
 
+surveys %>% 
+  filter(year < 1995) %>% 
+  select(year, sex, weight)
 
 
 
@@ -352,6 +374,17 @@ sum(surveys$year == 2000, na.rm = TRUE)
 
 
 
+surveys %>% 
+  filter(!is.na(weight)) %>% 
+  mutate(weight_kg = weight / 1000) %>% 
+  select(weight, weight_kg)
+
+surveys %>% 
+  filter(!is.na(weight)) %>% 
+  mutate(weight_kg = weight / 1000,
+         weight_lb = weight_kg * 2.2) %>% 
+  select(-month, -day, -hindfoot_length, -plot_type) %>% 
+  head()
 
 
 ## ## Mutate Challenge:
@@ -365,7 +398,11 @@ sum(surveys$year == 2000, na.rm = TRUE)
 
 
 
-
+surveys %>% 
+  filter(!is.na(hindfoot_length)) %>% 
+  mutate(hindfoot_half = hindfoot_length / 2) %>% 
+  filter(hindfoot_half < 30) %>% 
+  select(species_id, hindfoot_length, hindfoot_half)
 
 
 
