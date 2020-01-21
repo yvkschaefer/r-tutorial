@@ -810,7 +810,7 @@ ggsave("fig/combo_plot_abun_weight.png", combo_plot, width = 10, dpi = 300)
 
 ## SQL databases and R
 
-## install.packages(c("dbplyr", "RSQLite"))
+install.packages(c("dbplyr", "RSQLite"))
 
 
 
@@ -818,7 +818,7 @@ library(dplyr)
 library(dbplyr)
 mammals <- DBI::dbConnect(RSQLite::SQLite(), "data_raw/portal_mammals.sqlite")
 
-src_dbi(mammals)
+src_dbi(mammals) # tables are plots, species, and surveys
 
 tbl(mammals, sql("SELECT year, species_id, plot_id FROM surveys"))
 
@@ -826,32 +826,45 @@ surveys <- tbl(mammals, "surveys")
 surveys %>%
   select(year, species_id, plot_id)
 
+head(surveys, n = 10)
+
+nrow(surveys)
+
+show_query(head(surveys, n = 10))
+
+surveys %>% 
+  filter(weight < 5) %>% 
+  select(species_id, sex, weight)
 
 
+data_subset <- surveys %>%
+  filter(weight < 5) %>%
+  select(species_id, sex, weight)
 
 
+data_subset %>%
+  select(-sex)
 
+data_subset <- surveys %>% 
+  filter(weight < 5) %>% 
+  select(species_id, sex, weight) %>%
+  collect()
 
+data_subset
 
+plots <- tbl(mammals, "plots")
+plots
+surveys
 
-
-
-
-
-
-
-
-
+plots %>% 
+  filter(plot_id == 1) %>% 
+  inner_join(surveys) %>% 
+  collect()
 
 
 ## with dplyr syntax
 species <- tbl(mammals, "species")
 
-left_join(surveys, species) %>%
-  filter(taxa == "Rodent") %>%
-  group_by(taxa, year) %>%
-  tally %>%
-  collect()
 
 ## with SQL syntax
 query <- paste("
@@ -875,6 +888,14 @@ tbl(mammals, sql(query))
 ##  the species and survey tables together to exclude all
 ##  non-rodents. The query should return counts of rodents by year.
 
+
+left_join(surveys, species) %>%
+  filter(taxa == "Rodent") %>%
+  group_by(taxa, year) %>%
+  tally %>%
+  collect()
+
+
 ## Optional: Write a query in SQL that will produce the same
 ## result. You can join multiple tables together using the following
 ## syntax where foreign key refers to your unique id (e.g.,
@@ -886,13 +907,13 @@ tbl(mammals, sql(query))
 ## JOIN table3 ON table2.key = table3.key
 
 
-## species <- tbl(mammals, "species")
-## genus_counts <- left_join(surveys, plots) %>%
-##   left_join(species) %>%
-##   filter(taxa == "Rodent") %>%
-##   group_by(plot_type, genus) %>%
-##   tally %>%
-##   collect()
+species <- tbl(mammals, "species")
+genus_counts <- left_join(surveys, plots) %>%
+  left_join(species) %>%
+  filter(taxa == "Rodent") %>%
+  group_by(plot_type, genus) %>%
+  tally %>%
+  collect()
 
 ### Challenge
 
