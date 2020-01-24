@@ -928,3 +928,65 @@ my_db
 ## Add the remaining species table to the my_db database and run some
 ## of your queries from earlier in the lesson to verify that you
 ## have faithfully recreated the mammals database.
+
+
+
+
+# Loops and Functions
+# https://erdavenport.github.io/R-ecology-lesson/03-loops-and-functions.html#loops
+# note to self: do not feel the need to go further than I did in the tutorial from her site. The last challenge I tried for 'loops' I wasn't able to get the solution and she doesn't provide it. A bit demoralizing.
+
+for(i in 1:10) {
+  print(i)
+}
+
+for (i in c("cat", "dog", "gerbil")) {
+  print(i)
+}
+
+dim(surveys)[1]
+head(surveys)
+head(1:dim(surveys)[1])
+tail(1:dim(surveys)[1])
+for (i in 1:dim(surveys)[1]) {
+  if(surveys$year[i] == 1988) {
+    print("Hey, it's 1988 :)")
+  } else {
+   print("It isn't 1988.") 
+  }
+}
+
+na <- surveys %>% 
+  filter(!is.na(weight)) %>%
+  filter(year == 1988)
+  select(weight)
+  pull()
+dim(na)
+
+dim(surveys)
+
+surveys_adjusted <- surveys
+
+count <- 0
+for(i in 1:dim(surveys_adjusted)[1]) {
+  if(surveys_adjusted$year[i] == 1988) {
+    surveys_adjusted$weight[i] <- (surveys_adjusted$weight[i]*1.1) 
+    count = count + 1
+  }
+}
+count
+original_1988_weight <- mean(surveys$weight[surveys$year == 1988], na.rm = TRUE)
+original_1988_weight # 45.05576
+
+adjusted_1988_weight <- mean(surveys_adjusted$weight[surveys_adjusted$year == 1988], na.rm = TRUE)
+adjusted_1988_weight # 49.56134
+
+original_1988_weight * 1.1 # 49.56134
+
+write.table(surveys_adjusted, "data/survey_data_1988_weights_adjusted.csv", sep = ",", row.names = FALSE, quote=FALSE)
+write.table(surveys_adjusted, "data/survey_data_1988_weights_adjusted_with_row_names.csv", sep = ",", row.names = TRUE, quote=FALSE)
+
+surveys_adjusted_from_file <- read.csv("data/survey_data_1988_weights_adjusted.csv")
+surveys_adjusted_from_file_row_names <- read.csv("data/survey_data_1988_weights_adjusted_with_row_names.csv")
+View(surveys_adjusted_from_file)
+View(surveys_adjusted_from_file_row_names) # not seeing a difference. I think the row names are just increasing integers, which, is the same as default ?
