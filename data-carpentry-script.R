@@ -1011,3 +1011,20 @@ surveys_adjusted_from_file <- read.csv("data/survey_data_1988_weights_adjusted.c
 surveys_adjusted_from_file_row_names <- read.csv("data/survey_data_1988_weights_adjusted_with_row_names.csv")
 View(surveys_adjusted_from_file)
 View(surveys_adjusted_from_file_row_names) # not seeing a difference. I think the row names are just increasing integers, which, is the same as default ?
+
+
+
+# simple algorithm to transform one column to another
+a <- c("r", "a", "f", "s")
+b <- c("rock", "grassland", "flood_group", "shrubland")
+df = data.frame(a, b, stringsAsFactors = FALSE)
+
+# these are the rows
+dim(df)[1]
+
+for(i in 1:dim(df)[1]) {
+  print(df$a[i])
+  df$a[i] = df$b[i] 
+}
+
+View(df)
