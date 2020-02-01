@@ -105,7 +105,7 @@ setColors("tomato", 3)
 pizza(setColors("tomato", 3), bg = "gray20")
 opposite("tomato", bg = "gray20")
 
-### this above function is 100% my answer for PEM... but it _will_ be jarring. So how to improve....
+### this above function is 100% my answer for PEM... but it _will_ be jarring. So how to improve.... I think sequential() could be helpful, in conjunction. Maybe
 
 
 # more examples
@@ -113,11 +113,39 @@ setColors("tomato", 12)
 pizza(setColors("tomato", 12), bg = "gray20")
 pizza(setColors("#3D6DCC", 7), bg = "gray20", init.angle = 90)
 pizza(setColors("#3D6DCC", 7), bg = "gray20")
+pizza(setColors("#3D6DCC", 8), bg = "gray20")
 
 
 
 
-## start off at splitComp: split complementary colour scheme
+# splitComp: split complementary colour scheme
+# a variation of the complementary colour scheme. It uses the two colours adjacent to its complement
+
+splitComp("red", bg = "gray20")
+
+
+# square
+
+square("red", bg = "gray20")
+
+
+
+# tetradic
+# uses four colours arranged into two complementary pairs
+tetradic("red", bg = "gray20")
+
+
+# triadic
+# uses colours that are evenly spaced around the colour wheel
+triadic("red", bg = "gray20")
+
+
+# wheel
+# generates a colour wheel for a given colour
+wheel(pals("drift")[5], bg = "gray20", verbose = TRUE)
+pals()
+
+wheel("tomato", num = 18, bg = "gray20", cex = 0.7)
 
 
 
