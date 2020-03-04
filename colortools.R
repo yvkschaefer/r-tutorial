@@ -26,6 +26,7 @@ complementary("red", bg = "gray20")
 complementary("tomato", bg = "gray20")
 complementary("goldenrod", bg = "gray20")
 opposite("goldenrod", bg = "gray20")
+opposite("#DB00FF", bg = "gray20")
 
 
 # pals: palette colours included in colortools
@@ -57,6 +58,7 @@ wheel(pals("terra")[5])
 
 pizza(rainbow(7), bg = "gray20")
 pizza(setColors("tomato", 18), bg = "gray20", cex = 0.9)
+pizza(setColors("#0000FF", 7), bg = "gray20", cex = 0.9)
 col2HSV("tomato")
 
 
@@ -93,8 +95,13 @@ sequential("orange", what = "value")
 sequential("orange", what = "saturation") # this is default
 sequential("orange", what = "alpha")
 
+# -------------------------------------------------------------------------
+
+
 
 sequential("orange", 10, what = "value", s = 0.7, alpha = 0.5, fun = "log")
+x <- 4
+sequential("blue", 5, s = 0.7, alpha = 0.5, fun = "log")
 
 
 
