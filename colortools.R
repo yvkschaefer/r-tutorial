@@ -69,9 +69,11 @@ col2HSV("tomato")
 # sequential: sequential hue-saturation-value (HSV) colours
 # this function allows to get a sequence of colors in an HSV model with optional pre-especified numbers for saturation, value, and alpha. It is a very flexible function to play with different combinations of saturation, value, and alpha.
 
-sequential("tomato", percentage = 5, what = "value",
-           s = NULL, v = NULL, alpha = NULL, fun = "sqrt",
+sequential("tomato", percentage = 30, what = "value",
+           s = NULL, v = NULL, alpha = NULL, fun = "linear",
            plot = TRUE, verbose = TRUE)
+sequential("tomato", percentage = 30,
+           fun = "sqrt", plot = TRUE)
 col2HSV("tomato")
 
 sequential("orange") # fun = "linear" by default
@@ -79,11 +81,11 @@ sequential("orange", fun = "sqrt")
 sequential("orange", fun = "log")
 # linear and sqrt both share the same start and final hex colour codes, however log has a different final hex colour code... hm...
 
-    #logarithmic | ˌlɒɡəˈrɪðmɪk |
-    # adjective
-    # relating to or expressed in terms of logarithms.
-    # • (of a scale) constructed so that successive points along an axis, or graduations which are an equal distance apart, represent values which are in an equal ratio: the scale is logarithmic, so pH 2 is ten times more acidic than pH 3.
-    # • (of a curve) forming a straight line when plotted on a logarithmic scale; exponential.
+#logarithmic | ˌlɒɡəˈrɪðmɪk |
+# adjective
+# relating to or expressed in terms of logarithms.
+# • (of a scale) constructed so that successive points along an axis, or graduations which are an equal distance apart, represent values which are in an equal ratio: the scale is logarithmic, so pH 2 is ten times more acidic than pH 3.
+# • (of a curve) forming a straight line when plotted on a logarithmic scale; exponential.
 
 #so, logarithmic in this case means that each hexadecimal colour vector value is 10x more than the one previous to it ??
 
