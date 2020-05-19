@@ -1,0 +1,31 @@
+NMDS: non-metric multidimensional scaling
+
+```{r https://jonlefcheck.net/2012/10/24/nmds-tutorial-in-r/}
+
+{plot(0:10,0:10,type="n",axes=F,xlab="Abundance of Species 1",ylab="") 
+  axis(1)
+  points(5,0); text(5.5,0.5,labels="community A")
+  points(3,0); text(3.2,0.5,labels="community B")
+  points(0,0); text(0.8,0.5,labels="community C")}
+
+
+
+{plot(0:10,0:10,type="n",xlab="Abundance of Species 1",
+      ylab="Abundance of Species 2")
+  points(5,5); text(5,4.5,labels="community A")
+  points(3,3); text(3,3.5,labels="community B")
+  points(0,5); text(0.8,5.5,labels="community C")}
+
+
+
+library(scatterplot3d)
+{d=scatterplot3d(0:10,0:10,0:10,type="n",xlab="Abundance of Species 1",
+                 ylab="Abundance of Species 2",zlab="Abundance of Species 3"); d
+  d$points3d(5,5,0); text(d$xyz.convert(5,5,0.5),labels="community A")
+  d$points3d(3,3,3); text(d$xyz.convert(3,3,3.5),labels="community B")
+  d$points3d(0,5,5); text(d$xyz.convert(0,5,5.5),labels="community C")}
+
+```
+
+restart here: HOW DOES IT WORK?
+NMDS does not use the absolute abundances of species in communities, but rather their rank orders. The use of ranks omits some of the issues associated with using absolute distance (e.g., sensitivity to transformation), and as a result is much more flexible technique that accepts a variety of types of data. (It’s also where the “non-metric” part of the name comes from.)

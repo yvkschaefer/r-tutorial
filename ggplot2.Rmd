@@ -1,0 +1,58 @@
+```{r import library}
+
+library(ggplot2)
+```
+
+```{r first example}
+ds <- read.csv("https://github.com/ripberjt/qrmlabs/raw/master/Class%20Data%20Set%20Factored.csv", header = TRUE)
+
+ggplot(ds, aes(age)) +
+  geom_histogram()
+
+
+ggplot(ds) +
+  geom_histogram(aes(x=age, y=..density..))
+
+
+ggplot(ds, aes(age)) +
+  geom_histogram(aes(x=age, y=..density..), bins=50) +
+  stat_function(fun=dnorm, args = list(mean=mean(ds$age), sd=sd(ds$age)), color="red")
+
+
+set.seed(357)
+x <- data.frame(name = as.factor(sample(letters, 10)), val = runif(10))
+x
+```
+
+There are four basic parts of a simple data visualization in ggplot2: the _ggplot()_ function, the _data_ parameter, the _aes()_ function, and the geom specification
+
+ggplot(data = ___, aes(x = ___, y = ___)) + geom_line()
+
+ggplot() function: initiates plotting
+
+data: enables you to specify the dataframe that contains your data, with the variables that you want to visualize
+
+geometric objects (eg geom_line, geom_boxplot ...): a geom is something you draw. It's short for geometric object. 
+
+aes() function: enables you to create a set of mappings from data in your dataframe to the aesthetic attributes of the plot
+geoms (geometric objects) have aesthetic attributes, things like colour and size. If you draw a point (point geom), that point will have attributes like the colour and size.
+When we create a data visualization, we're connecting the data in a dataset to elements in visualization.
+We create a mapping that connects the variables in a dataset to the aesthetic attributes of the geometric objects that we draw
+The aes() function is the function that creates those mappings.
+
+
+The syntax of facet_wrap
+
+ggplot(data = Credit, aes(x = Balance)) + geom_density() +
+facet_wrap(~Student)
+
+
+
+```{r facet_wrap}
+# You can facet by multiple variables
+xp <- ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  facet_wrap(vars(cyl, drv))
+xp
+
+```

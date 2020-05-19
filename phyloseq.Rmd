@@ -1,0 +1,80 @@
+```{r load libraries}
+library(ggplot2)
+library(phyloseq)
+library(ape)
+```
+
+
+```{r create otumat etc https://joey711.github.io/phyloseq/import-data.html}
+# Create a pretend OTU operational taxonomic unit table that you read from a file, called otumat
+otumat <- matrix(sample(1:100, 100, replace = TRUE), nrow = 10, ncol = 10)
+otumat
+
+rownames(otumat) <- paste0("OTU", 1:nrow(otumat))
+colnames(otumat) <- paste0("Sample", 1:ncol(otumat))
+otumat
+
+# now we need a pretend taxonomy table
+taxmat <- matrix(sample(letters, 70, replace = TRUE), nrow = nrow(otumat), ncol = 7)
+rownames(taxmat) <- rownames(otumat)
+colnames(taxmat) <- c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+taxmat
+
+class(otumat)
+class(taxmat)
+
+OTU <- otu_table(otumat, taxa_are_rows = TRUE)
+TAX <- tax_table(taxmat)
+OTU
+otumat
+TAX
+
+physeq <- phyloseq(OTU, TAX)
+physeq
+
+plot_bar(physeq, fill = "Family")
+
+# data("GlobalPatterns")
+# gp.ch = subset_taxa(GlobalPatterns, Phylum == "Chlamydiae")
+# plot_bar(gp.ch)
+# plot_bar(gp.ch, fill="Genus")
+# plot_bar(gp.ch, x="SampleType", fill="Genus")
+# plot_bar(gp.ch, "SampleType", fill="Genus", facet_grid=~Family)
+
+sampledata <- sample_data(data.frame(
+  Location = sample(LETTERS[1:4], size = nsamples(physeq), replace = TRUE),
+  Depth = sample(50:1000, size = nsamples(physeq), replace = TRUE),
+  row.names = sample_names(physeq),
+  stringsAsFactors = FALSE
+))
+sampledata
+
+random_tree <- rtree(ntaxa(physeq), rooted = TRUE, tip.label = taxa_names(physeq))
+plot(random_tree)
+
+
+physeq1 <- merge_phyloseq(physeq, sampledata, random_tree)
+physeq1
+
+physeq2 <- phyloseq(OTU, TAX, sampledata, random_tree)
+physeq2
+
+identical(physeq1, physeq2)
+
+
+data("GlobalPatterns")
+
+theme_set(theme_bw())
+pal = "Set1"
+scale_colour_discrete <-  function(palname=pal, ...){
+  scale_colour_brewer(palette=palname, ...)
+}
+scale_fill_discrete <-  function(palname=pal, ...){
+  scale_fill_brewer(palette=palname, ...)
+}
+
+GP <- prune_species(speciesSums(GlobalPatterns) > 0, GlobalPatterns)
+plot_richness(GP, measures = "ACE")
+
+
+```
