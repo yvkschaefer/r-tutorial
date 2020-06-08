@@ -1,0 +1,36 @@
+```{r load libraries}
+library(vegan)
+library(dplyr)
+```
+
+```{r plot metaMDS}
+data("dune")
+data("dune.env")
+
+dune.mds <- metaMDS(dune, distance = "bray", autotransform = FALSE) # distance = "bray" . bray is an option for a dissimilarity index
+dune.mds
+plot(dune.mds) # displays sites and species
+plot(dune.mds, type = "n") # displays empty ordination space
+points(dune.mds, display = "sites", pch = c(16,8,17,18) [as.numeric(dune.env$Management)], col = c("green", "blue", "orange", "black") [as.numeric(dune.env$Management)]) # displays site points where symbols (pch) and colour (col) are different management options
+legend("topright", legend = levels(dune.env$Management), pch = c(16, 8, 17, 18), col = c("green", "blue", "orange", "black"), bty = "n", cex = 1) # displays symbol and colour legend
+legend("topleft", paste0("stress = ", format(round(dune.mds$stress, 3))), bty = "n", cex = 1) # displays legend text of stress value
+
+ordiplot(dune.mds, type = "n", main = "ellipses")
+orditorp(dune.mds, display = "sites", labels = F, pch = c(16, 8, 17, 18) [as.numeric(dune.env$Management)], col = c("green", "blue", "orange", "black") [as.numeric(dune.env$Management)], cex = 1)
+ordiellipse(dune.mds, groups = dune.env$Management, draw = "polygon", lty = 1, col = "grey90")
+
+
+ordiplot(dune.mds, type = "n", main = "hulls")
+orditorp(dune.mds, display = "sites", labels = F, pch = c(16, 8, 17, 18) [as.numeric(dune.env$Management)], col = c("green", "blue", "orange", "black") [as.numeric(dune.env$Management)], cex = 1)
+ordihull(dune.mds, groups = dune.env$Management, draw = "polygon", lty = 1, col = "grey90")
+
+intrinsics <- envfit(dune.mds, dune, permutations = 999)
+head(intrinsics)
+
+
+ordiplot(dune.mds, type = "n", main = "intrinsic species")
+orditorp(dune.mds, display = "sites", labels = F, pch = c(16, 8, 17, 18) [as.numeric(dune.env$Management)], col = c("green", "blue", "orange", "black") [as.numeric(dune.env$Management)], cex = 1)
+plot(intrinsics, p.max = 0.01, col = "black", cex = 0.7) # change the significance level of species shown with p.max
+
+
+```
